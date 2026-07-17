@@ -1,32 +1,35 @@
-![Seneca Trello-Provider](http://senecajs.org/files/assets/seneca-logo.png)
+![Seneca](http://senecajs.org/files/assets/seneca-logo.png)
+> A [Seneca.js](http://senecajs.org) plugin
 
-> _Seneca Trello-Provider_ is a plugin for [Seneca](http://senecajs.org)
+# @seneca/notion-provider
 
-
-Provides access to the Trello API using the Seneca *provider*
-convention. Trello API entities are represented as Seneca entities so
-that they can be accessed using the Seneca entity API and messages.
-
-See [seneca-entity](senecajs/seneca-entity) and the [Seneca Data
-Entities
-Tutorial](https://senecajs.org/docs/tutorials/understanding-data-entities.html) for more details on the Seneca entity API.
-
-NOTE: underlying third party SDK needs to be replaced as out of date and has a security issue.
-
-[![npm version](https://img.shields.io/npm/v/@seneca/trello-provider.svg)](https://npmjs.com/package/@seneca/trello-provider)
-[![build](https://github.com/senecajs/seneca-trello-provider/actions/workflows/build.yml/badge.svg)](https://github.com/senecajs/seneca-trello-provider/actions/workflows/build.yml)
-[![Coverage Status](https://coveralls.io/repos/github/senecajs/seneca-trello-provider/badge.svg?branch=main)](https://coveralls.io/github/senecajs/seneca-trello-provider?branch=main)
-[![Known Vulnerabilities](https://snyk.io/test/github/senecajs/seneca-trello-provider/badge.svg)](https://snyk.io/test/github/senecajs/seneca-trello-provider)
-[![DeepScan grade](https://deepscan.io/api/teams/5016/projects/19462/branches/505954/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=5016&pid=19462&bid=505954)
-[![Maintainability](https://api.codeclimate.com/v1/badges/f76e83896b731bb5d609/maintainability)](https://codeclimate.com/github/senecajs/seneca-trello-provider/maintainability)
-
+[![build](https://github.com/senecajs/seneca-notion-provider/actions/workflows/build.yml/badge.svg)](https://github.com/senecajs/seneca-notion-provider/actions/workflows/build.yml)
+[![Known Vulnerabilities](https://snyk.io/test/github/senecajs/seneca-notion-provider/badge.svg)](https://snyk.io/test/github/senecajs/seneca-notion-provider)
 
 | ![Voxgig](https://www.voxgig.com/res/img/vgt01r.png) | This open source module is sponsored and supported by [Voxgig](https://www.voxgig.com). |
 |---|---|
 
 
-## Quick Example
+Provides access to the Notion API using the Seneca *provider*
+convention. Notion API entities are represented as Seneca entities so
+that they can be accessed using the Seneca entity API and messages.
+See [seneca-entity](senecajs/seneca-entity) and the [Seneca Data
+Entities
+Tutorial](https://senecajs.org/docs/tutorials/understanding-data-entities.html) for more details on the Seneca entity API.
+NOTE: underlying third party SDK needs to be replaced as out of date and has a security issue.
 
+
+## Install
+
+```sh
+$ npm install @seneca/notion-provider @seneca/env
+```
+
+
+
+<!--START:options-->
+
+## Quick Example
 
 ```js
 
@@ -36,101 +39,153 @@ Seneca()
   // Get API keys using the seneca-env plugin
   .use('env', {
     var: {
-      $TRELLO_APIKEY: String,
-      $TRELLO_USERTOKEN: String,
+      $NOTION_TOKEN: String,
     }
   })
   .use('provider', {
     provider: {
-      trello: {
+      notion: {
         keys: {
-          apikey: { value: '$TRELLO_APIKEY' },
-          usertoken: { value: '$TRELLO_USERTOKEN' },
+          authToken: {
+            value: '$NOTION_TOKEN'
+          },
         }
       }
     }
   })
-  .use('trello-provider')
+  .use('notion-provider')
 
-let board = await seneca.entity('provider/trello/board')
-  .load$('<trello-board-id>')
+let pageId = await seneca.entity('provider/notion/page')
+                  .load$('<notion_page_id>');
 
-Console.log('BOARD', board)
+Console.log('PAGE', pageId)
 
-board.desc = 'New description'
-board = await board.save$()
+pageId.properties.checkMe.checkbox = false;
+pageId = await pageId.save$()
 
-Console.log('UPDATED BOARD', board)
-
-```
-
-## Install
-
-```sh
-$ npm install @seneca/trello-provider @seneca/env
-```
-
-
-
-<!--START:options-->
-
-
-## Options
-
-* `debug` : boolean <i><small>false</small></i>
-
-
-Set plugin options when loading with:
-```js
-
-
-seneca.use('TrelloProvider', { name: value, ... })
-
+Console.log('UPDATED PAGE', pageId)
 
 ```
 
+## More Examples
 
-<small>Note: <code>foo.bar</code> in the list above means 
-<code>{ foo: { bar: ... } }</code></small> 
+See [test/](test/) for more usage examples.
 
+## Motivation
+
+A [Seneca.js](http://senecajs.org) plugin.
+
+## Support
+
+If you're using this module and need help, you can:
+
+- Post a [github issue](https://github.com/senecajs/seneca-notion-provider/issues)
+- Tweet to [@senecajs](http://twitter.com/senecajs)
+- Ask on the [Gitter](https://gitter.im/senecajs/seneca)
+
+## API
+
+### Options
+
+*None.*
 
 
 <!--END:options-->
 
 <!--START:action-list-->
 
+### Action Patterns
 
-## Action Patterns
-
-* [role:entity,base:trello,cmd:load,name:repo,zone:provider](#-roleentitybasetrellocmdloadnamerepozoneprovider-)
-* [role:entity,base:trello,cmd:save,name:repo,zone:provider](#-roleentitybasetrellocmdsavenamerepozoneprovider-)
-* [sys:provider,get:info,provider:trello](#-sysprovidergetinfoprovidertrello-)
+* ["role":"entity","base":"notion","cmd":"list","name":"database","zone":"provider"](#-roleentitybasenotioncmdlistnamedatabasezoneprovider-)
+* ["role":"entity","base":"notion","cmd":"list","name":"page","zone":"provider"](#-roleentitybasenotioncmdlistnamepagezoneprovider-)
+* ["role":"entity","base":"notion","cmd":"load","name":"database","zone":"provider"](#-roleentitybasenotioncmdloadnamedatabasezoneprovider-)
+* ["role":"entity","base":"notion","cmd":"load","name":"page","zone":"provider"](#-roleentitybasenotioncmdloadnamepagezoneprovider-)
+* ["role":"entity","base":"notion","cmd":"save","name":"database","zone":"provider"](#-roleentitybasenotioncmdsavenamedatabasezoneprovider-)
+* ["role":"entity","base":"notion","cmd":"save","name":"page","zone":"provider"](#-roleentitybasenotioncmdsavenamepagezoneprovider-)
+* ["sys":"provider","get":"info","provider":"notion"](#-sysprovidergetinfoprovidernotion-)
 
 
 <!--END:action-list-->
 
 <!--START:action-desc-->
 
+### Action Descriptions
 
-## Action Descriptions
+### &laquo; `"role":"entity","base":"notion","cmd":"list","name":"database","zone":"provider"` &raquo;
 
-### &laquo; `role:entity,base:trello,cmd:load,name:repo,zone:provider` &raquo;
-
-Load Trello repository data into an entity.
-
-
-
-----------
-### &laquo; `role:entity,base:trello,cmd:save,name:repo,zone:provider` &raquo;
-
-Update Trello repository data from an entity.
+No description provided.
 
 
 
 ----------
-### &laquo; `sys:provider,get:info,provider:trello` &raquo;
+### &laquo; `"role":"entity","base":"notion","cmd":"list","name":"page","zone":"provider"` &raquo;
 
-Get information about the provider.
+List Noion page data into an entity.
+
+
+
+
+
+#### Replies With
+
+
+```
+{}
+```
+
+
+----------
+### &laquo; `"role":"entity","base":"notion","cmd":"load","name":"database","zone":"provider"` &raquo;
+
+No description provided.
+
+
+
+----------
+### &laquo; `"role":"entity","base":"notion","cmd":"load","name":"page","zone":"provider"` &raquo;
+
+Load Notion page data into an entity.
+
+
+
+
+
+#### Replies With
+
+
+```
+{}
+```
+
+
+----------
+### &laquo; `"role":"entity","base":"notion","cmd":"save","name":"database","zone":"provider"` &raquo;
+
+No description provided.
+
+
+
+----------
+### &laquo; `"role":"entity","base":"notion","cmd":"save","name":"page","zone":"provider"` &raquo;
+
+Update/Save Notion page data into an entity.
+
+
+
+
+
+#### Replies With
+
+
+```
+{}
+```
+
+
+----------
+### &laquo; `"sys":"provider","get":"info","provider":"notion"` &raquo;
+
+Get information about the Notion SDK.
 
 
 
@@ -138,3 +193,16 @@ Get information about the provider.
 
 
 <!--END:action-desc-->
+
+## Contributing
+
+The [Senecajs org](https://github.com/senecajs/) encourages open participation. If you feel you can help in any way, be it with documentation, examples, extra testing, or new features please get in touch.
+
+The [SenecaJS org](http://senecajs.org/) encourages participation. If you feel you can help in any way, be
+it with bug reporting, documentation, examples, extra testing, or new features, feel free
+to [create an issue](https://github.com/senecajs/seneca-maintain/issues/new), or better yet - [submit a Pull Request](https://github.com/senecajs/seneca-maintain/pulls). For more
+information on contribution, please see our [Contributing Guide](http://senecajs.org/contribute).
+
+## Background
+
+Check out the SenecaJS roadmap [here](https://senecajs.org/roadmap/)!
