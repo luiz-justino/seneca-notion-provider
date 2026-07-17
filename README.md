@@ -9,44 +9,15 @@
 | ![Voxgig](https://www.voxgig.com/res/img/vgt01r.png) | This open source module is sponsored and supported by [Voxgig](https://www.voxgig.com). |
 |---|---|
 
-## Quick Example
 
+Provides access to the Notion API using the Seneca *provider*
+convention. Notion API entities are represented as Seneca entities so
+that they can be accessed using the Seneca entity API and messages.
+See [seneca-entity](senecajs/seneca-entity) and the [Seneca Data
+Entities
+Tutorial](https://senecajs.org/docs/tutorials/understanding-data-entities.html) for more details on the Seneca entity API.
+NOTE: underlying third party SDK needs to be replaced as out of date and has a security issue.
 
-```js
-
-// Setup - get the key value (<SECRET>) separately from a vault or
-// environment variable.
-Seneca()
-  // Get API keys using the seneca-env plugin
-  .use('env', {
-    var: {
-      $NOTION_TOKEN: String,
-    }
-  })
-  .use('provider', {
-    provider: {
-      notion: {
-        keys: {
-          authToken: {
-            value: '$NOTION_TOKEN'
-          },
-        }
-      }
-    }
-  })
-  .use('notion-provider')
-
-let pageId = await seneca.entity('provider/notion/page')
-                  .load$('<notion_page_id>');
-
-Console.log('PAGE', pageId)
-
-pageId.properties.checkMe.checkbox = false;
-pageId = await pageId.save$()
-
-Console.log('UPDATED PAGE', pageId)
-
-```
 
 ## Install
 
