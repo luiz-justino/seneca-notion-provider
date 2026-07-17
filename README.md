@@ -9,6 +9,45 @@
 | ![Voxgig](https://www.voxgig.com/res/img/vgt01r.png) | This open source module is sponsored and supported by [Voxgig](https://www.voxgig.com). |
 |---|---|
 
+## Quick Example
+
+
+```js
+
+// Setup - get the key value (<SECRET>) separately from a vault or
+// environment variable.
+Seneca()
+  // Get API keys using the seneca-env plugin
+  .use('env', {
+    var: {
+      $NOTION_TOKEN: String,
+    }
+  })
+  .use('provider', {
+    provider: {
+      notion: {
+        keys: {
+          authToken: {
+            value: '$NOTION_TOKEN'
+          },
+        }
+      }
+    }
+  })
+  .use('notion-provider')
+
+let pageId = await seneca.entity('provider/notion/page')
+                  .load$('<notion_page_id>');
+
+Console.log('PAGE', pageId)
+
+pageId.properties.checkMe.checkbox = false;
+pageId = await pageId.save$()
+
+Console.log('UPDATED PAGE', pageId)
+
+```
+
 ## Install
 
 ```sh
